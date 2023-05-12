@@ -1,8 +1,9 @@
-package com.uom.user.registration;
+package com.uom.user.service;
 
-import com.uom.user.student.Student;
-import com.uom.user.student.UserRole;
-import com.uom.user.student.AppUserService;
+import com.uom.user.bean.User;
+import com.uom.user.registration.EmailValidator;
+import com.uom.user.controller.request.RegistrationRequest;
+import com.uom.user.bean.UserRole;
 import com.uom.user.email.EmailSender;
 import com.uom.user.registration.token.ConfirmationToken;
 import com.uom.user.registration.token.ConfirmationTokenService;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RegistrationService {
 
-    private final AppUserService appUserService;
+    private final UserService userService;
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
@@ -29,10 +30,9 @@ public class RegistrationService {
             throw new IllegalStateException("email not valid");
         }
 
-        String token = appUserService.signUpUser(
-                new Student(
-                        request.getFirstName(),
-                        request.getLastName(),
+        String token = userService.signUpUser(
+                new User(
+                        request.getUserName(),
                         request.getEmail(),
                         request.getPassword(),
                         UserRole.USER
@@ -43,7 +43,7 @@ public class RegistrationService {
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
         emailSender.send(
                 request.getEmail(),
-                buildEmail(request.getFirstName(), link));
+                buildEmail(request.getUserName(), link));
 
         return token;
     }
@@ -66,8 +66,8 @@ public class RegistrationService {
         }
 
         confirmationTokenService.setConfirmedAt(token);
-        appUserService.enableAppUser(
-                confirmationToken.getStudent().getEmail());
+        userService.enableAppUser(
+                confirmationToken.getUser().getEmail());
         return "confirmed";
     }
 

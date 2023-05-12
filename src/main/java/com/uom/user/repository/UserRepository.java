@@ -1,19 +1,19 @@
-package com.uom.user.student;
+package com.uom.user.repository;
 
+import com.uom.user.bean.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
 
 @Repository
 @Transactional(readOnly = true)
-public interface AppUserRepository
-        extends JpaRepository<Student, Long> {
+public interface UserRepository
+        extends JpaRepository<User, Long> {
 
-    Optional<Student> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     @Transactional
     @Modifying

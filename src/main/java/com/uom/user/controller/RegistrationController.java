@@ -1,5 +1,7 @@
-package com.uom.user.registration;
+package com.uom.user.controller;
 
+import com.uom.user.controller.request.RegistrationRequest;
+import com.uom.user.service.RegistrationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

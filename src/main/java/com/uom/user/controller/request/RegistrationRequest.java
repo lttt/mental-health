@@ -1,4 +1,4 @@
-package com.uom.user.registration;
+package com.uom.user.controller.request;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -10,8 +10,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class RegistrationRequest {
-    private final String firstName;
-    private final String lastName;
+    private final String userName;
     private final String email;
     private final String password;
 }

@@ -1,6 +1,6 @@
 package com.uom.user.registration.token;
 
-import com.uom.user.student.Student;
+import com.uom.user.bean.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,15 +42,15 @@ public class ConfirmationToken {
             nullable = false,
             name = "app_user_id"
     )
-    private Student student;
+    private User user;
 
     public ConfirmationToken(String token,
                              LocalDateTime createdAt,
                              LocalDateTime expiresAt,
-                             Student student) {
+                             User user) {
         this.token = token;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
-        this.student = student;
+        this.user = user;
     }
 }

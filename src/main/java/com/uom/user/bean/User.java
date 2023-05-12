@@ -1,4 +1,4 @@
-package com.uom.user.student;
+package com.uom.user.bean;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,36 +17,29 @@ import java.util.Collections;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-public class Student implements UserDetails {
+@Table (name ="user_register")
+public class User implements UserDetails {
 
 
-    @SequenceGenerator(
-            name = "student_sequence",
-            sequenceName = "student_sequence",
-            allocationSize = 1
-    )
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
-    )
+@Id
+@Column (name ="id")
     private Long id;
-    private String firstName;
-    private String lastName;
+
+    @Column (name ="name")
+    private String userName;
     private String email;
     private String password;
+    @Column (name ="user_role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
     private Boolean locked = false;
     private Boolean enabled = false;
 
-    public Student(String firstName,
-                   String lastName,
+    public User(String userName,
                    String email,
                    String password,
                    UserRole userRole) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.userName = userName;
         this.email = email;
         this.password = password;
         this.userRole = userRole;
@@ -56,6 +49,7 @@ public class Student implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority =
                 new SimpleGrantedAuthority(userRole.name());
+        //TODO --
         return Collections.singletonList(authority);
     }
 
@@ -66,16 +60,10 @@ public class Student implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return userName;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
 
-    public String getLastName() {
-        return lastName;
-    }
 
     @Override
     public boolean isAccountNonExpired() {

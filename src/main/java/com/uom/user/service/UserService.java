@@ -1,7 +1,9 @@
-package com.uom.user.student;
+package com.uom.user.service;
 
+import com.uom.user.bean.User;
 import com.uom.user.registration.token.ConfirmationToken;
 import com.uom.user.registration.token.ConfirmationTokenService;
+import com.uom.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,27 +16,27 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class AppUserService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     private final static String USER_NOT_FOUND_MSG =
             "user with email %s not found";
 
-    private final AppUserRepository appUserRepository;
+    private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        return appUserRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 String.format(USER_NOT_FOUND_MSG, email)));
     }
 
-    public String signUpUser(Student student) {
-        boolean userExists = appUserRepository
-                .findByEmail(student.getEmail())
+    public String signUpUser(User user) {
+        boolean userExists = userRepository
+                .findByEmail(user.getEmail())
                 .isPresent();
 
         if (userExists) {
@@ -45,11 +47,11 @@ public class AppUserService implements UserDetailsService {
         }
 
         String encodedPassword = bCryptPasswordEncoder
-                .encode(student.getPassword());
+                .encode(user.getPassword());
 
-        student.setPassword(encodedPassword);
+        user.setPassword(encodedPassword);
 
-        appUserRepository.save(student);
+        userRepository.save(user);
 
         String token = UUID.randomUUID().toString();
 
@@ -57,7 +59,7 @@ public class AppUserService implements UserDetailsService {
                 token,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(15),
-                student
+                user
         );
 
         confirmationTokenService.saveConfirmationToken(
@@ -69,6 +71,6 @@ public class AppUserService implements UserDetailsService {
     }
 
     public int enableAppUser(String email) {
-        return appUserRepository.enableAppUser(email);
+        return userRepository.enableAppUser(email);
     }
 }
